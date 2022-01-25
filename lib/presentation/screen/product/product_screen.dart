@@ -1,6 +1,6 @@
 import 'package:firebase_example/presentation/controller/product_controller.dart';
-import 'package:firebase_example/presentation/screen/product/add_product.dart';
-import 'package:firebase_example/presentation/screen/product/edit_product.dart';
+import 'package:firebase_example/presentation/screen/product/item/add_product.dart';
+import 'package:firebase_example/presentation/screen/product/item/edit_product.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

@@ -1,26 +1,36 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_example/data/domain/entity/no_param.dart';
+import 'package:firebase_example/data/domain/usecase/category_item_usecase.dart';
 import 'package:firebase_example/data/model/product_model.dart';
 import 'package:get/state_manager.dart';
 
 class ProductController extends GetxController {
   var listProduct = RxList<ProductModel>();
+  final GetAllProductUseCase? getAllProductUseCase;
 
   var selectedProduct = ProductModel(id: '', name: '', price: 0);
 
-  loadProduct() async {
-    listProduct.clear();
-    await FirebaseFirestore.instance
-        .collection('product')
-        .get()
-        .then((QuerySnapshot querySnapshot) {
-      for (var doc in querySnapshot.docs) {
-        listProduct.add(ProductModel.fromFirestore(doc));
-      }
-    });
+  ProductController({this.getAllProductUseCase});
+
+  // loadProduct() async {
+  //   listProduct.clear();
+  //   await FirebaseFirestore.instance
+  //       .collection('product')
+  //       .get()
+  //       .then((QuerySnapshot querySnapshot) {
+  //     for (var doc in querySnapshot.docs) {
+  //       listProduct.add(ProductModel.fromFirestore(doc));
+  //     }
+  //   });
+  // }
+
+  selectProduct(ProductModel model) async {
+    selectedProduct = model;
   }
 
-  selectProduct(ProductModel model) {
-    selectedProduct = model;
+  loadProduct() async {
+    var list = await getAllProductUseCase!.call(NoParam());
+    listProduct.assignAll(list);
   }
 
   saveDate(ProductModel model) async {
@@ -34,9 +44,11 @@ class ProductController extends GetxController {
       (value) {
         listProduct.add(model);
       },
-    ).catchError((onError) {
-      return;
-    });
+    ).catchError(
+      (onError) {
+        return;
+      },
+    );
   }
 
   deleteData(String id) async {
